@@ -1,11 +1,44 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import {
+  addItem,
+  decreaseItemQuantity,
+  increaseItemQuantity,
+} from "./cartSlice";
+import Product from "../products/Product";
 
 function AddToCart() {
   const [show, setShow] = useState(false); //show + count - buttons
-  const [count, setCount] = useState(1);
+  const [count, setCount] = useState(0); // i will replace this with quantity
+
+  const dispatch = useDispatch();
   function toggle() {
     setShow((show) => !show);
+    const newItem = {
+      name: "p1",
+      quantity: 1,
+      unitPrice: 50,
+      totalPrice: 100,
+    };
+    dispatch(addItem(newItem));
+    setCount((count) => count + 1);
+    increaseItemQuantity(Product);
   }
+  function handleDeleteFromCart() {
+    count > 1 ? () => setCount((count) => count - 1) : toggle;
+    decreaseItemQuantity();
+  }
+  function handleAddToCart() {
+    const newItem = {
+      name: "p1",
+      quantity: 1,
+      unitPrice: 50,
+      totalPrice: 100,
+    };
+    dispatch(addItem(newItem));
+    setCount((count) => count + 1);
+  }
+
   return (
     <div>
       {!show && (
@@ -17,7 +50,7 @@ function AddToCart() {
         <div className="shadow-md m-2 flex bg-white rounded-md w-40 items-center justify-center">
           <button
             className="w-8 h-8 m-2 px-2 bg-white rounded-md text-2xl font-bold text-gray-800"
-            onClick={count > 1 ? () => setCount((count) => count - 1) : toggle}
+            onClick={handleDeleteFromCart}
           >
             -
           </button>
@@ -26,7 +59,7 @@ function AddToCart() {
           </span>
           <button
             className="w-8 h-8 m-2 px-2 bg-white rounded-md text-2xl font-bold text-gray-800"
-            onClick={() => setCount((count) => count + 1)}
+            onClick={handleAddToCart}
           >
             +
           </button>
